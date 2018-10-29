@@ -1,0 +1,14 @@
+*.pyc
+*.js
+*.css
+*.min.css
+*.min.js
+settings.py
+migrations/
+__pycache__/
+*.min.css.map
+*.min.js.map
+*css.map
+*js.map
+*.bundle.js.map
+

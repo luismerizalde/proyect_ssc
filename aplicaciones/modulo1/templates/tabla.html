@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% load static from staticfiles %}
+
+{% block title %}
+	First template
+{% endblock title %}
+
+{% block content %}
+	{% block style %}
+		{{block.super}}
+	{% endblock style %}
+	<style type="text/css">
+		table{
+			 margin: 0 0 40px 0;
+			 width: 100%;
+			 box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+			 display: table;
+			 @media screen and (max-width: 580px);
+			 display: block
+		}
+		tr:nth-child(even) {background: #CCC}
+		tr:nth-child(odd) {background: #FFF}
+		th{
+			background: #A0A0A0;
+			color: white;
+			text-align: center;	
+		}
+ 
+	</style>
+
+	<div class="container mt-3" ng-app="myApp" ng-controller="myCtrl">
+		<table>
+			<thead>
+				<tr>
+					<th>Item</th>
+					<th>Nombre</th>
+					<th>Observacion</th>
+					<th>fecha2</th>
+					<th>Opciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for e in entidades %}
+					<tr>
+						<td>{{forloop.counter}}</td>
+						<td>{{e.nombre}}</td>
+						<td>{{e.observacion}}</td>
+						<td>{{e.fecha_destino}}</td>
+						<td>
+							<button item={{e.id}} class="btn btn-warning btn-xs edit" style="color: white" data-target="#exampleModal" data-toggle="modal" ng-click="getData({{e.id}})"><i class="fa fa-edit" ></i> Editar</button> 
+							<button item={{e.id}} class="btn btn-danger btn-xs delete" ng-click="deleteData({{e.id}})" ><i class="fa fa-times"></i> Eliminar</button>
+						</td>
+					</tr>
+				{% endfor %}
+				
+			</tbody>
+		</table>
+
+		<br>
+
+		<!-- MODAL TEST-->
+			<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="color:rgba(0,0,0,0.5)">
+			  <div class="modal-dialog" role="document">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <h5 class="modal-title" id="exampleModalLabel">Titulo modal</h5>
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			          <span aria-hidden="true">&times;</span>
+			        </button>
+			      </div>
+			      <div class="modal-body">
+			      	<div  ng-init="item=0">
+				      	<form>
+				      		{% csrf_token %}
+					      	<div class="row">
+		                        <div class="col-md-12" style="padding-bottom:10px;">
+		                            <label><b>Nombre</b></label><br>
+		                            <input type="text" class="form-control" id="nombre" ng-model="data_name" placeholder="Nombre">
+		                        </div>
+		                    </div>
+		                    <div class="row">
+		                        <div class="col-md-12" style="padding-bottom:10px;">
+		                            <label><b>Observación</b></label><br>
+		                            <textarea id="observacion" rows="4" class="form-control" ng-model="data_obs"></textarea>
+		                        </div>
+		                    </div>
+	                    </form>
+                    </div>
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fa fa-times"></i> Cerrar</button>
+			        <button type="button" class="btn btn-success"><i class="fa fa-save"></i> Guardar</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+		<!-- FIN MODAL TEST-->
+
+		<script type="text/javascript">
+
+			
+			var item = 6;
+			// $(document).on('click', '.edit', function(){
+			// 	item = $(this).attr('item');
+			// 	$("div[ng-controller='myCtrl']").attr('ng-init','item=' + item)
+			// 	console.log($("div[ng-controller='myCtrl']").attr('ng-init'));
+
+
+				// $.ajax({
+				// 	type: "POST",
+				// 	url: "{% url 'vistas_tabla' %}",
+				// 	data: {
+				// 		'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
+				// 		'item': item,
+				// 		'tipo': 'cargar',
+				// 	},
+				// 	success: function(resp){
+				// 		$('#exampleModal').modal('hide');
+				// 		if (resp.mensaje){
+				// 			console.log(resp.mensaje)
+				// 			$('#nombre').val(resp.nombre);
+				// 			$('#observacion').val(resp.obs);
+				// 		}else{
+				// 			alert("error al cargar los datos")
+				// 		}
+						
+				// 	}, 
+				// 	error: function(XMLHttpRequest, textStatus, errorThrown) {
+				// 		$('#exampleModal').modal('hide');
+    //                 	console.log('Hubo un error en: aplicaciones/modulo1/vista1');
+    //                 }
+				// })
+			// });
+
+
+			// Prueba angular
+			var app = angular.module('myApp', [], function($interpolateProvider){
+				$interpolateProvider.startSymbol('[[');
+				$interpolateProvider.endSymbol(']]');
+			});
+
+			app.controller('myCtrl', function($scope, $http) {
+			    $scope.getData = function (item) {
+					var data = {text: $scope.todoInput, estado: true}
+					$http.get("/entidades/"+item).then(function(response) {
+						$scope.data_name = response.data.nombre;
+						$scope.data_obs = response.data.observacion;
+					});
+				};
+
+				
+				// app.directive('ngConfirmClick', [
+				//     function(){
+				//         return {
+				//             link: function (scope, element, attr) {
+				//                 var msg = attr.ngConfirmClick || "Are you sure?";
+				//                 var clickAction = attr.confirmedClick;
+				//                 element.bind('click',function (event) {
+				//                     if ( window.confirm(msg) ) {
+				//                         scope.$eval(clickAction)
+				//                     }
+				//                 });
+				//             }
+				//         };
+				// }])
+
+				$scope.deleteData = function (item) {
+					// $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+					// $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+					$http.delete("/entidades/"+item+"/");					
+				};
+				
+				
+			    
+			});
+
+
+			
+			
+			
+
+			
+		</script>
+
+
+
+
+	</div>
+{% endblock content %}

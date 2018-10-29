@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% load static from staticfiles %}
+
+{% block title %}
+	Test Form
+{% endblock title %}
+
+{% block content %}
+	<div class="container">
+		<div class="row mt-3">
+			<div class="col-sm-4"></div>
+			<div class="col-sm-4" ng-app="toDo" ng-controller="toDoController">
+				<div class="card" style="width: 18rem;">
+				  <div class="card-body">
+					<form ng-submit="todoAdd()">
+					  {% csrf_token %}
+					  <div class="form-group">
+					    <label for="exampleInputEmail1">Email address</label>
+					    <input type="text" class="form-control" id="exampleInputEmail1" ng-model="todoInput" aria-describedby="emailHelp" placeholder="Enter email">
+					  </div>
+					  <div class="form-group form-check">
+					    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+					    <label class="form-check-label" for="exampleCheck1">Check me out</label>
+					  </div>
+					  <button type="submit" class="btn btn-primary" ng-click="saveData()">Submit</button>
+					</form>
+				  </div>
+				</div>				
+			</div>
+			<div class="col-sm-4"></div>
+		</div>
+		
+	</div>
+
+
+	<script type="text/javascript">
+		var app = angular.module('toDo', [], function($interpolateProvider){
+				$interpolateProvider.startSymbol('[[');
+				$interpolateProvider.endSymbol(']]');
+			});
+
+			app.controller('toDoController', function($scope, $http) {
+				$scope.todoAdd = function () {
+				// body...
+				}
+
+				$scope.saveData = function () {
+					console.log('entro save data')
+					var data = {text: $scope.todoInput, estado: true}
+					console.log('paso 1 data')
+					$http.put('/api_prueba/', data);
+					console.log('paso 2 data')
+				}
+			});
+
+		
+	</script>
+
+{% endblock content %}

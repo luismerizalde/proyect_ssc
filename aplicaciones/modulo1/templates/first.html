@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% load static from staticfiles %}
+
+{% block title %}
+	First template
+{% endblock title %}
+
+{% block content %}
+	<div class="container">
+		<div id="notificacion" class="alert alert-primary" role="alert" style="display:none; position:relative">
+			This is a primary alert—check it out!
+		</div>
+
+		<br>
+		<br>
+		<form>
+			<div class="form-group">
+				<label for="exampleInputEmail1">Email address</label>
+				<input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+				<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+			</div>
+			<div class="form-group">
+				<label for="exampleDate">Current date</label>
+				<input type="form-text" class="form-control" id="datepicker" aria-describedby="emailHelp" placeholder="">
+				<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+			</div>
+
+			<div class="form-group">
+				<label for="exampleInputPassword1">Password</label>
+				<input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+			</div>
+			<div class="form-check">
+				<input type="checkbox" class="form-check-input" id="exampleCheck1">
+				<label class="form-check-label" for="exampleCheck1">Check me out</label>
+			</div>
+			<button id="animacion" class="btn btn-primary"> <i class="fas fa-address-card"></i> Submit</button>
+		</form>
+	</div>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			console.log('funcionado jquery desde consola');
+		});
+
+		$( function() {
+		    $( "#datepicker" ).datepicker();
+		} );
+
+		$(document). on('click', '#animacion', function(e){
+			e.preventDefault();
+			console.log('entro animacion')
+			pos = $("#notificacion").position().top
+			// $("#notificacion").fadeIn(3000, function(){
+			// 	$("#notificacion").animate({top: '250px'},3000);
+			// });
+
+			$("#notificacion").fadeIn(3000);
+			$("#notificacion").animate({top: '250px'},1000)
+
+			// $("#notificacion").animate({top: '250px'},3000);
+			// $("#notificacion").animate({top: pos}, 3000);
+			// $("#notificacion").fadeOut(3000)
+			
+		});
+	</script>
+{% endblock content %}
